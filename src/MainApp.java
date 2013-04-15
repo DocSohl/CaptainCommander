@@ -27,10 +27,8 @@ public class MainApp extends JApplet implements GLEventListener, KeyListener
 {
 	double sqr( double x) { return x*x;}
 	public class Camera {
-		private double ex, ey, ez, cx, cy, cz, ux, uy, uz;
 		private double ctheta = 0.0087266463;
 		private double pitch = 0, roll = 0, yaw = 0;
-		private double X=0,Y=1,Z=0;
 		private Double [][] eye = {{0.0},{1.0},{0.0}};
 		private Double [][] cen = {{0.0},{0.0},{0.0}};
 		private Double [][] up = {{0.0},{0.0},{1.0}};
@@ -203,6 +201,7 @@ public class MainApp extends JApplet implements GLEventListener, KeyListener
 		lastTime = System.nanoTime();
 		theta = 0;
 		camera = new Camera(0,0,0,0,0,1,0,1,0);
+//		camera.roll(1);
 	}
 
 	public synchronized void update () {
@@ -212,7 +211,7 @@ public class MainApp extends JApplet implements GLEventListener, KeyListener
 		//        sx = 0.5*Math.sin(theta);
 		//        sy = 0;
 		//        sz = 0.5*Math.cos(theta);
-//				camera.pitch(0.000001);
+				camera.pitch(0.000001);
 //				camera.roll(0.000001);
 	}
 
