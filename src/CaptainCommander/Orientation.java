@@ -15,9 +15,20 @@ abstract class Orientation {
 	protected Double [][][] misc = null; //A list of other vectors for the program to track
 	private Double [][] relcen, relup; //Internalized computational holders
 	private Double [][][] relmisc; //Again...
+	protected Double [][] temp = {{0.0},{0.0},{0.0}};
 	protected boolean usemisc = false; //Set true if values are stored within misc
 
-	Orientation(){} //Unused constructor (you never know)
+	Orientation(){
+		temp[0][0] = Math.cos(pitch)*Math.cos(roll);
+		temp[1][0] = Math.cos(pitch)*Math.sin(roll);
+		temp[2][0] = -Math.sin(pitch);
+//		cen[0][0] = Math.sin(0)*Math.sin(pitch)*Math.cos(roll) - Math.cos(0)*Math.sin(roll);
+//        cen[1][0] = Math.cos(0)*Math.cos(roll) + Math.sin(0)*Math.sin(pitch)*Math.sin(roll);
+//        cen[2][0] = Math.sin(0)*Math.cos(pitch);
+//        up[0][0] = Math.sin(0)*Math.sin(roll) + Math.cos(0)*Math.sin(pitch)*Math.cos(roll);
+//        up[1][0] = Math.cos(0)*Math.sin(pitch)*Math.sin(roll) - Math.sin(0)*Math.cos(roll);
+//        up[2][0] = Math.cos(0)*Math.cos(pitch);
+	}
 	
 	/**Square a double*/
 	protected double sqr(double x){return x*x;}
@@ -26,7 +37,7 @@ abstract class Orientation {
 	protected void forward() {
 		double dx = cen[0][0] - eye[0][0], dy = cen[1][0] - eye[1][0], dz = cen[2][0] - eye[2][0];
 		double m = Math.sqrt(sqr(dx)+sqr(dy)+sqr(dz));
-		cen = new Double[][]{{cen[0][0]+dx/(m*100.0)},{cen[1][0]+dy/(m*100.0)},{cen[2][0]+dz/(m*100.0)}};
+//		cen = new Double[][]{{cen[0][0]+dx/(m*100.0)},{cen[1][0]+dy/(m*100.0)},{cen[2][0]+dz/(m*100.0)}};
 		eye = new Double[][]{{eye[0][0]+dx/(m*100.0)},{eye[1][0]+dy/(m*100.0)},{eye[2][0]+dz/(m*100.0)}};
 	}
 	
@@ -34,7 +45,7 @@ abstract class Orientation {
 	protected void back() {
 		double dx = cen[0][0] - eye[0][0], dy = cen[1][0] - eye[1][0], dz = cen[2][0] - eye[2][0];
 		double m = Math.sqrt(sqr(dx)+sqr(dy)+sqr(dz));
-		cen = new Double[][]{{cen[0][0]-dx/(m*100.0)},{cen[1][0]-dy/(m*100.0)},{cen[2][0]-dz/(m*100.0)}};
+//		cen = new Double[][]{{cen[0][0]-dx/(m*100.0)},{cen[1][0]-dy/(m*100.0)},{cen[2][0]-dz/(m*100.0)}};
 		eye = new Double[][]{{eye[0][0]-dx/(m*100.0)},{eye[1][0]-dy/(m*100.0)},{eye[2][0]-dz/(m*100.0)}};
 	}
 
@@ -145,14 +156,17 @@ abstract class Orientation {
 	 */
 	protected void reevaluate(double roll, double pitch){
 		//Translate the vectors to the origin
-		relcen = new Double[][]{new Double[]{cen[0][0]-eye[0][0]},new Double[]{cen[1][0]-eye[1][0]},new Double[]{cen[2][0]-eye[2][0]}};
-		relup = new Double[][]{new Double[]{up[0][0]-eye[0][0]},new Double[]{up[1][0]-eye[1][0]},new Double[]{up[2][0]-eye[2][0]}};
-		if(usemisc){ //Note: This works because all vectors should be based on 'eye'
-			relmisc = new Double[misc.length][][]; //should...
-			for(int i = 0; i < misc.length; i++){
-				relmisc[i] = new Double[][]{new Double[]{misc[i][0][0]-eye[0][0]},new Double[]{misc[i][1][0]-eye[1][0]},new Double[]{misc[i][2][0]-eye[2][0]}};
-			}
-		}
+//		relcen = new Double[][]{new Double[]{cen[0][0]-eye[0][0]},new Double[]{cen[1][0]-eye[1][0]},new Double[]{cen[2][0]-eye[2][0]}};
+//		relup = new Double[][]{new Double[]{up[0][0]-eye[0][0]},new Double[]{up[1][0]-eye[1][0]},new Double[]{up[2][0]-eye[2][0]}};
+//		if(usemisc){ //Note: This works because all vectors should be based on 'eye'
+//			relmisc = new Double[misc.length][][]; //should...
+//			for(int i = 0; i < misc.length; i++){
+//				relmisc[i] = new Double[][]{new Double[]{misc[i][0][0]-eye[0][0]},new Double[]{misc[i][1][0]-eye[1][0]},new Double[]{misc[i][2][0]-eye[2][0]}};
+//			}
+//		}
+		relcen = cen;
+		relup = up;
+		relmisc = misc;
 		//Please kill me...
 		Double [][] rollRotation = { //The rotation matrix for the instantaneous roll
 				{1.0,0.0,0.0}, 		 //  This is how much we're actually changing the object
@@ -197,5 +211,29 @@ abstract class Orientation {
 			}
 			misc = relmisc2;
 		}
+	}
+	
+	protected void reevaluate(double roll, double pitch, boolean disable){
+        double tx = Math.cos(roll)*up[0][0] - Math.sin(roll)*temp[0][0];
+        double ty = Math.cos(roll)*up[1][0] - Math.sin(roll)*temp[1][0];
+        double tz = Math.cos(roll)*up[2][0] - Math.sin(roll)*temp[2][0];
+		temp[0][0] = Math.sin(roll)*up[0][0] + Math.cos(roll)*temp[0][0];
+		temp[1][0] = Math.sin(roll)*up[1][0] + Math.cos(roll)*temp[1][0];
+		temp[2][0] = Math.sin(roll)*up[2][0] + Math.cos(roll)*temp[2][0];
+        up[0][0] = tx;
+        up[1][0] = ty;
+        up[2][0] = tz;
+        tx = Math.cos(pitch)*up[0][0] + Math.sin(pitch)*cen[0][0];
+        ty = Math.cos(pitch)*up[1][0] + Math.sin(pitch)*cen[1][0];
+        tz = Math.cos(pitch)*up[2][0] + Math.sin(pitch)*cen[2][0];
+        cen[0][0] = -Math.sin(pitch)*up[0][0] + Math.cos(pitch)*cen[0][0];
+        cen[1][0] = -Math.sin(pitch)*up[1][0] + Math.cos(pitch)*cen[1][0];
+        cen[2][0] = -Math.sin(pitch)*up[2][0] + Math.cos(pitch)*cen[2][0];
+        up[0][0] = tx;
+        up[1][0] = ty;
+        up[2][0] = tz;
+//        eye[0][0] -= cen[0][0];
+//        eye[1][0] -= cen[1][0];
+//        eye[2][0] -= cen[2][0];
 	}
 }
