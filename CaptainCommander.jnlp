@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<jnlp spec="1.0+" codebase="."
+  href="CaptainCommander.jnlp">
+
+  <information>
+    <title>Captain Commander</title>
+    <vendor>Ian Sohl</vendor>
+    <description>Captain Commander</description>
+    <offline-allowed/>
+  </information>
+  <update check="background" policy="always"/>
+  
+
+  <resources>
+    <j2se href="http://java.sun.com/products/autodl/j2se" version="1.4+"/>
+    <property name="sun.java2d.noddraw" value="true"/>
+    <extension name="jogl-all-awt" href="http://jogamp.org/deployment/jogamp-current/jogl-all-awt.jnlp" />
+    <jar href="CaptainCommander.jar" main="true"/>
+  </resources>
+
+  <applet-desc 
+      name="Captain Commander"
+      main-class="CaptainCommander.MainApp"
+      width="800" 
+      height="600">
+  </applet-desc>
+</jnlp>

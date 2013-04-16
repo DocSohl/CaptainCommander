@@ -1,0 +1,7 @@
+/* AUTOMATICALLY GENERATED ON Mon Apr 15 21:05:15 MDT 2013*/
+/* DO NOT EDIT */
+
+grant codeBase "http://sohl.org/cs2420/" {
+  permission java.awt.AWTPermission "CaptainCommander";
+};
+

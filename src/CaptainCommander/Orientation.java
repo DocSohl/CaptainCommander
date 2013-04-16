@@ -76,7 +76,7 @@ abstract class Orientation {
 	 */
 	protected void roll(double angle){
 		pitch+=-angle; //Reverse the angle because OpenGL has a horrid coordinate system.
-		if(Math.abs(pitch)>10) pitch=pitch%(Math.PI*2); //If the angle is too far off, move back
+		if(Math.abs(pitch)>10) pitch=(pitch+Math.PI*2)%(Math.PI*2); //If the angle is too far off, move back
 		reevaluate(0.0,-angle); //Re-evaluate all vectors with the new angle
 	}
 
@@ -87,7 +87,7 @@ abstract class Orientation {
 	 */
 	protected void pitch(double angle){
 		roll+=-angle; //Flip the angle, since OpenGL is stupid.
-		if(Math.abs(roll)>10) roll=roll%(Math.PI*2); //Move the angle back into the realm of mere mortals
+		if(Math.abs(roll)>10) roll=(roll+Math.PI*2)%(Math.PI*2); //Move the angle back into the realm of mere mortals
 		reevaluate(-angle,0.0); //Re-evaluate all vectors with the new angle
 	}
 	
