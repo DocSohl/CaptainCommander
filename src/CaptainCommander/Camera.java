@@ -23,15 +23,15 @@ public class Camera extends Orientation{
 		 */
 		Camera(double ex, double ey, double ez, double cx, double cy, double cz, double ux, double uy, double uz) {
 			super(); //Just in case. You never know when I might want to stick one in.
-			eye[0] = new Double[]{ex};
-			eye[1] = new Double[]{ey};
-			eye[2] = new Double[]{ez};
-			cen[0] = new Double[]{cx};
-			cen[1] = new Double[]{cy};
-			cen[2] = new Double[]{cz};
-			up[0] = new Double[]{ux}; //Space efficiency!
-			up[1] = new Double[]{uy}; 
-			up[2] = new Double[]{uz};
+			eye[0] = ex;
+			eye[1] = ey;
+			eye[2] = ez;
+			cen[0] = cx;
+			cen[1] = cy;
+			cen[2] = cz;
+			up[0] = ux; //Space efficiency!
+			up[1] = uy; 
+			up[2] = uz;
 		}
 		
 		/**
@@ -39,8 +39,8 @@ public class Camera extends Orientation{
 		 * @param glu GL device passed from MainApp
 		 */
 		void setLookAt(GLU glu) {
-			glu.gluLookAt(eye[0][0], eye[1][0], eye[2][0], cen[0][0], cen[1][0], cen[2][0], up[0][0], up[1][0], up[2][0]);
-//			glu.gluLookAt(eye[0][0],eye[1][0],eye[2][0],eye[0][0]-up[0][0],eye[1][0]-up[1][0],eye[2][0]-up[2][0],cen[0][0],cen[1][0],cen[1][0]);
+//			glu.gluLookAt(eye[0], eye[1], eye[2], cen[0], cen[1], cen[2], up[0], up[1], up[2]);
+			glu.gluLookAt(eye[0],eye[1],eye[2],eye[0]+cen[0],eye[1]+cen[1],eye[2]+cen[2],up[0],up[1],up[1]);
 		}
 		
 		/**Tell the camera to move forward. I'll make this better at some point.*/
