@@ -46,8 +46,15 @@ public class MainApp extends JApplet implements GLEventListener, KeyListener
 	int lastx=winWidth/2, lasty=winHeight/2; //The last recorded location of the mouse
 
 	public MainApp() {
-		camera = new Camera(0,0,0,0,0,1,0,1,0); //Create a camera at <0,0,0> pointing into the z-axis 
+		double x = Math.sqrt(2)/2;
+		camera = new Camera(0,0,0,0,0,1,0,1,0); //Create a camera at <0,0,0> pointing into the z-axis
+//		camera = new Camera(0,0,0,0,x,x,0,x,-x);
+//		camera.roll+=Math.PI;
+//		camera.pitch+=Math.PI/2;
 		ship = new Ship(); //Create a test ship for testing.
+//		ship.roll(200,winWidth);
+//		ship.pitch(-200,winHeight);
+		
 	}
 
 	/**
@@ -55,6 +62,7 @@ public class MainApp extends JApplet implements GLEventListener, KeyListener
 	 */
 	public synchronized void update () {
 		//Unused for now
+//		ship.roll(1,winWidth*1000);
 	}
 
 	/**

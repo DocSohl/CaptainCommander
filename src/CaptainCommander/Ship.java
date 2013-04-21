@@ -20,15 +20,15 @@ public class Ship extends Orientation{
 		eye[2] = 1.0; //                    {{x},
 		cen[0] = 0.0; //                     {y},
 		cen[1] = 0.0; //                     {z}}
-		cen[2] = 2.0; //
+		cen[2] = 1.0; //
 		up[0] = 0.0;  //eye (Eye) is the location of the ship/camera
 		up[1] = 1.0;  //cen (Center) is the unit vector that the ship points
 		up[2] = 0.0;  //up  (Up) is the unit vector indicating which direction is up for the ship
 		misc = new Double[][]{ //Create 4 3-vectors to represent the 4 corners of the base of the ship
-				new Double[]{-minorLength+eye[0],-minorLength+eye[1],eye[2]},
-				new Double[]{minorLength+eye[0],-minorLength+eye[1],eye[2]},
-				new Double[]{minorLength+eye[0],minorLength+eye[1],eye[2]},
-				new Double[]{-minorLength+eye[0],minorLength+eye[1],eye[2]}
+				new Double[]{-minorLength,-minorLength,0.0},
+				new Double[]{minorLength,-minorLength,0.0},
+				new Double[]{minorLength,minorLength,0.0},
+				new Double[]{-minorLength,minorLength,0.0}
 		}; //These are created in order for the rotating drawing
 		usemisc=true; //Tell the superclass to use these misc vectors
 	}
@@ -64,26 +64,25 @@ public class Ship extends Orientation{
 	public void display(GLAutoDrawable gld){
 		double nosedistance = Math.sqrt(sqr(majorLength)-sqr(minorLength/2)); //Finding the distance between the center of the ship and the nose.
 		Double [] noselocation = super.multiplyUnitVector(cen, nosedistance); //Adjusting the cen vector to point to the location of the nose
-		Double [][] relmisc = misc; //For future use, ignore this for now
 		final GL2 gl = gld.getGL().getGL2(); //Fetch the drawing environment from the gld
 		gl.glBegin(GL2.GL_TRIANGLE_FAN); //Drawing the pyramidal part in one sheet, which is more efficient since less edges are calculated
 		gl.glMaterialf(GL.GL_FRONT_AND_BACK, GLLightingFunc.GL_SHININESS, 1.0f); //Make it shiny!
 		gl.glMaterialfv(GL.GL_FRONT_AND_BACK, GLLightingFunc.GL_AMBIENT_AND_DIFFUSE, new float[]{0.0f,0.0f,1.0f}, 0); //And Blue...
 		gl.glMaterialfv(GL.GL_FRONT_AND_BACK, GLLightingFunc.GL_SPECULAR, new float[]{0.0f,0.0f,1.0f}, 0); //Shiny blue
-	    gl.glVertex3d(noselocation[0],noselocation[1],noselocation[2]);   //Place the vertex for the nose of the ship
+	    gl.glVertex3d(eye[0]+noselocation[0],eye[1]+noselocation[1],eye[2]+noselocation[2]);   //Place the vertex for the nose of the ship
 	    gl.glMaterialfv(GL.GL_FRONT_AND_BACK, GLLightingFunc.GL_AMBIENT_AND_DIFFUSE, new float[]{0.0f,1.0f,0.0f}, 0); //Fade to green
 		gl.glMaterialfv(GL.GL_FRONT_AND_BACK, GLLightingFunc.GL_SPECULAR, new float[]{0.0f,1.0f,0.0f}, 0); //Shiny green
-	    gl.glVertex3d(relmisc[0][0],relmisc[0][1],relmisc[0][2]);   //Draw the remaining edges in this order:
-	    gl.glVertex3d(relmisc[1][0],relmisc[1][1],relmisc[1][2]);   //			1,2,3,4,1
-	    gl.glVertex3d(relmisc[2][0],relmisc[2][1],relmisc[2][2]);   //Which mark the four corners of the base
-	    gl.glVertex3d(relmisc[3][0],relmisc[3][1],relmisc[3][2]);   //		Note: reversing the drawing order causes the normal to point inwards
-	    gl.glVertex3d(relmisc[0][0],relmisc[0][1],relmisc[0][2]);   //		Also: relmisc is a sequence of 4 3-vectors pointing to corners
+	    gl.glVertex3d(eye[0]+(minorLength*misc[0][0]),eye[1]+(minorLength*misc[0][1]),eye[2]+(minorLength*misc[0][2]));   //Draw the remaining edges in this order:
+	    gl.glVertex3d(eye[0]+(minorLength*misc[1][0]),eye[1]+(minorLength*misc[1][1]),eye[2]+(minorLength*misc[1][2]));   //			1,2,3,4,1
+	    gl.glVertex3d(eye[0]+(minorLength*misc[2][0]),eye[1]+(minorLength*misc[2][1]),eye[2]+(minorLength*misc[2][2]));   //Which mark the four corners of the base
+	    gl.glVertex3d(eye[0]+(minorLength*misc[3][0]),eye[1]+(minorLength*misc[3][1]),eye[2]+(minorLength*misc[3][2]));   //		Note: reversing the drawing order causes the normal to point inwards
+	    gl.glVertex3d(eye[0]+(minorLength*misc[0][0]),eye[1]+(minorLength*misc[0][1]),eye[2]+(minorLength*misc[0][2]));   //		Also: eye+(minorLength*misc is a sequence of 4 3-vectors pointing to corners
 		gl.glEnd(); //Finish the the main pyramid part
 		gl.glBegin(GL2.GL_QUADS); //Draw the base of the ship as a square
-		gl.glVertex3d(relmisc[0][0],relmisc[0][1],relmisc[0][2]); //Note, same order as the pyramid, which causes the normal to appear outside.
-	    gl.glVertex3d(relmisc[1][0],relmisc[1][1],relmisc[1][2]);
-	    gl.glVertex3d(relmisc[2][0],relmisc[2][1],relmisc[2][2]);
-	    gl.glVertex3d(relmisc[3][0],relmisc[3][1],relmisc[3][2]);
+		gl.glVertex3d(eye[0]+(minorLength*misc[0][0]),eye[1]+(minorLength*misc[0][1]),eye[2]+(minorLength*misc[0][2])); //Note, same order as the pyramid, which causes the normal to appear outside.
+	    gl.glVertex3d(eye[0]+(minorLength*misc[1][0]),eye[1]+(minorLength*misc[1][1]),eye[2]+(minorLength*misc[1][2]));
+	    gl.glVertex3d(eye[0]+(minorLength*misc[2][0]),eye[1]+(minorLength*misc[2][1]),eye[2]+(minorLength*misc[2][2]));
+	    gl.glVertex3d(eye[0]+(minorLength*misc[3][0]),eye[1]+(minorLength*misc[3][1]),eye[2]+(minorLength*misc[3][2]));
 		gl.glEnd(); //Finish the base
 	}
 }

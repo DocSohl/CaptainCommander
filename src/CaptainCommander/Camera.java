@@ -40,7 +40,8 @@ public class Camera extends Orientation{
 		 */
 		void setLookAt(GLU glu) {
 //			glu.gluLookAt(eye[0], eye[1], eye[2], cen[0], cen[1], cen[2], up[0], up[1], up[2]);
-			glu.gluLookAt(eye[0],eye[1],eye[2],eye[0]+cen[0],eye[1]+cen[1],eye[2]+cen[2],up[0],up[1],up[1]);
+//			glu.gluLookAt(eye[0],eye[1],eye[2],eye[0]+cen[0],eye[1]+cen[1],eye[2]+cen[2],up[0],up[1],up[1]);
+			glu.gluLookAt(eye[0],eye[1],eye[2],eye[0]-zx,eye[1]-zy,eye[2]-zz,yx,yy,yz);
 		}
 		
 		/**Tell the camera to move forward. I'll make this better at some point.*/
