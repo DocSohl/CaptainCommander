@@ -44,6 +44,7 @@ public class MainApp extends JApplet implements GLEventListener, KeyListener
 	Camera camera; //Camera to view scene with
 	Ship ship; //Sample ship for testing
 	int lastx=winWidth/2, lasty=winHeight/2; //The last recorded location of the mouse
+	boolean robotmoved = false;
 
 	public MainApp() {
 		double x = Math.sqrt(2)/2;
@@ -169,12 +170,23 @@ public class MainApp extends JApplet implements GLEventListener, KeyListener
 		});
 		canvas.addMouseMotionListener(new MouseMotionAdapter(){ //Actually use the mouse to move the camera
 			public void mouseMoved(MouseEvent e){
+				int screenx = e.getLocationOnScreen().x-e.getPoint().x; //Determine canvas position based on cursor position in the canvas
+				int screeny = e.getLocationOnScreen().y-e.getPoint().y; //     and in the OS
+				int middleX = screenx+(winWidth/ 2); //New position to move to
+				int middleY = screeny+(winHeight / 2);
 				int x = e.getX();
 				int y = e.getY();//Get the current coordinates...
 				camera.roll(x-lastx,winWidth); //And compare with the last ones to make a roll
 				camera.pitch(y-lasty,winHeight); //And pitch
 				lastx=x; //Store for the next time
 				lasty=y;
+				if(Math.abs(x-(winWidth/2))>40|| Math.abs(y-(winHeight/2))>40){
+					try{
+						lastx=winWidth/2;
+						lasty=winHeight/2;
+						new Robot().mouseMove(middleX, middleY); //Use Robot to move the cursor
+					}catch(Exception ex){System.out.println(ex);}
+				}
 			}
 		});
 		// add the canvas to the frame
