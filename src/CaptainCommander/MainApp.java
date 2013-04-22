@@ -65,6 +65,12 @@ public class MainApp extends JApplet implements GLEventListener, KeyListener
 		camera = new Camera(0,0,0,0,0,1,0,1,0); //Create a camera at <0,0,0> pointing into the z-axis
 		//		camera = new Camera(0,0,0,0,x,x,0,x,-x);
 		//		camera.roll+=Math.PI;
+		Double [][] plane = {
+				{-2.0,-2.0,2.0},
+				{-2.0,2.0,2.0},
+				{2.0,2.0,2.0},
+				{2.0,-2.0,2.0}};
+			
 		//		camera.pitch+=Math.PI/2;
 		ship = new Ship(); //Create a test ship for testing.
 		//		ship.roll(200,winWidth);
@@ -98,10 +104,10 @@ public class MainApp extends JApplet implements GLEventListener, KeyListener
 		//gl.glLoadIdentity();
 
 		gl.glBegin(GL2.GL_QUADS);
-		gl.glVertex3d(-1.0,- 1.0,+ 1.0);
-		gl.glVertex3d(-1.0,+ 1.0,+ 1.0);
-		gl.glVertex3d(+1.0,+ 1.0,+ 1.0);
-		gl.glVertex3d(+1.0,- 1.0,+ 1.0);
+		gl.glVertex3d(-1.0,- 1.0,+ .10);
+		gl.glVertex3d(-1.0,+ 1.0,+ .10);
+		gl.glVertex3d(+1.0,+ 1.0,+ .10);
+		gl.glVertex3d(+1.0,- 1.0,+ .10);
 		gl.glEnd();
 
 		//		gl.glBegin(GL2.GL_QUADS);
@@ -282,8 +288,8 @@ public class MainApp extends JApplet implements GLEventListener, KeyListener
 				//System.out.println(e.getX() + ", " + e.getY());
 				if (startGame == false){
 					//NOT SURE WHY THISE ISN'T WORKING YET
-					//					if (Math.abs(e.getX()-winWidth/2)<25 && Math.abs(e.getY()-winHeight/2)<25){
-					//						startGame = true;
+					//	if (Math.abs(e.getX()-winWidth/2)<25 && Math.abs(e.getY()-winHeight/2)<25){
+					//	startGame = true;
 					//					}
 					if (e.getX()  <= winWidth/2 + 25 && e.getX() >= winWidth/2-25 && 
 							e.getY() <=winHeight/2 + 25 && e.getY() >= winHeight/2-25){
