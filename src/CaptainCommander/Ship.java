@@ -14,6 +14,8 @@ import javax.media.opengl.fixedfunc.GLLightingFunc;
 public class Ship extends Orientation{	
 	/**Create a new ship at <1,0,0>, pointing in <1,0,0>.*/
 	public Ship(){
+		//a change
+		
 		super(); //In case I decide to add anything to the Orientation constructor
 		eye[0] = 0.0; //The actual physical location of the ship.
 		eye[1] = 0.0; //Technically, vectors here are column vectors so they look like this:
