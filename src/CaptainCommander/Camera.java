@@ -22,10 +22,10 @@ public class Camera extends Orientation{
 		 * @param uz Up(z) Or sentience...
 		 */
 		Camera(double ex, double ey, double ez, double cx, double cy, double cz, double ux, double uy, double uz) {
-			super(); //Just in case. You never know when I might want to stick one in.
-			eye[0] = ex;
-			eye[1] = ey;
-			eye[2] = ez;
+			super(0.0,0.0,0.0);
+			c[0] = ex;
+			c[1] = ey;
+			c[2] = ez;
 			n[0] = cx;
 			n[1] = cy;
 			n[2] = cz;
@@ -39,19 +39,17 @@ public class Camera extends Orientation{
 		 * @param glu GL device passed from MainApp
 		 */
 		void setLookAt(GLU glu) {
-//			glu.gluLookAt(eye[0], eye[1], eye[2], cen[0], cen[1], cen[2], up[0], up[1], up[2]);
-//			glu.gluLookAt(eye[0],eye[1],eye[2],eye[0]+cen[0],eye[1]+cen[1],eye[2]+cen[2],up[0],up[1],up[1]);
-			glu.gluLookAt(eye[0],eye[1],eye[2],eye[0]+n[0],eye[1]+n[1],eye[2]+n[2],v[0],v[1],v[2]);
+			glu.gluLookAt(c[0],c[1],c[2],c[0]+n[0],c[1]+n[1],c[2]+n[2],v[0],v[1],v[2]);
 		}
 		
 		/**Tell the camera to move forward. I'll make this better at some point.*/
 		public void forward(){
-			super.forward();
+			super.forward(0.03);
 		}
 		
 		/**Tell the camera to move backwards. I'll make this better at some point.*/
 		public void back(){
-			super.back();
+			super.back(0.03);
 		}
 		
 		/**

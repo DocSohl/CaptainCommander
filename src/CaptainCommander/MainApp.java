@@ -54,8 +54,8 @@ public class MainApp extends JApplet implements GLEventListener, KeyListener
 //		camera.pitch+=Math.PI/2;
 		ship = new Ship(); //Create a test ship for testing.
 		ship.roll(200,winWidth);
-//		ship.pitch(-200,winHeight);
-		
+		ship.roll(-200,winWidth);
+		ship.pitch(-200,winHeight);
 	}
 
 	/**
@@ -63,7 +63,7 @@ public class MainApp extends JApplet implements GLEventListener, KeyListener
 	 */
 	public synchronized void update () {
 		//Unused for now
-//		ship.roll(1,winWidth*100000000);
+//		ship.roll(1,winWidth*1000);
 	}
 
 	/**
@@ -98,14 +98,14 @@ public class MainApp extends JApplet implements GLEventListener, KeyListener
 		gl.glMaterialfv(GL.GL_FRONT_AND_BACK, GLLightingFunc.GL_SPECULAR, color2, 0);
 		gl.glMaterialf(GL.GL_FRONT_AND_BACK, GLLightingFunc.GL_SHININESS, 1.0f); //And Shiny!
 		gl.glNormal3d(0,0,-1); //Point the normal in the right direction
-		gl.glVertex3d(camera.eye[0]-2.0, camera.eye[1]-2.0, camera.eye[2]+4.0); //Define two corners
-		gl.glVertex3d(camera.eye[0]-2.0, camera.eye[1]+2.0, camera.eye[2]+4.0);
+		gl.glVertex3d(camera.c[0]-2.0, camera.c[1]-2.0, camera.c[2]+4.0); //Define two corners
+		gl.glVertex3d(camera.c[0]-2.0, camera.c[1]+2.0, camera.c[2]+4.0);
 		float [] color4 = {1.0f, 0.0f, 0.0f, 1.0f}; //Make the other side red
 		gl.glMaterialfv(GL.GL_FRONT_AND_BACK, GLLightingFunc.GL_AMBIENT_AND_DIFFUSE, color4, 0);
 		gl.glMaterialfv(GL.GL_FRONT_AND_BACK, GLLightingFunc.GL_SPECULAR, color4, 0);
 		gl.glMaterialf(GL.GL_FRONT_AND_BACK, GLLightingFunc.GL_SHININESS, 1.0f); //Also shiny!
-		gl.glVertex3d(camera.eye[0]+2.0, camera.eye[1]+2.0, camera.eye[2]+4.0); //Define the remaining two corners
-		gl.glVertex3d(camera.eye[0]+2.0, camera.eye[1]-2.0, camera.eye[2]+4.0); 
+		gl.glVertex3d(camera.c[0]+2.0, camera.c[1]+2.0, camera.c[2]+4.0); //Define the remaining two corners
+		gl.glVertex3d(camera.c[0]+2.0, camera.c[1]-2.0, camera.c[2]+4.0); 
 		gl.glEnd(); //Done with rectangle
 	}
 
@@ -176,8 +176,8 @@ public class MainApp extends JApplet implements GLEventListener, KeyListener
 				int middleY = screeny+(winHeight / 2);
 				int x = e.getX();
 				int y = e.getY();//Get the current coordinates...
-				camera.roll(x-lastx,winWidth); //And compare with the last ones to make a roll
-				camera.pitch(y-lasty,winHeight); //And pitch
+				ship.roll(x-lastx,winWidth); //And compare with the last ones to make a roll
+				ship.pitch(y-lasty,winHeight); //And pitch
 				lastx=x; //Store for the next time
 				lasty=y;
 				if(Math.abs(x-(winWidth/2))>40|| Math.abs(y-(winHeight/2))>40){

@@ -14,23 +14,17 @@ import javax.media.opengl.fixedfunc.GLLightingFunc;
 public class Ship extends Orientation{	
 	/**Create a new ship at <1,0,0>, pointing in <1,0,0>.*/
 	public Ship(){
-		super(); //In case I decide to add anything to the Orientation constructor
-		eye[0] = 0.0; //The actual physical location of the ship.
-		eye[1] = 0.0; //Technically, vectors here are column vectors so they look like this:
-		eye[2] = 1.0; //                    {{x},
-		n[0] = 0.0; //                     {y},
-		n[1] = 0.0; //                     {z}}
-		n[2] = 1.0; //
-		v[0] = 0.0;  //eye (Eye) is the location of the ship/camera
-		v[1] = 1.0;  //cen (Center) is the unit vector that the ship points
-		v[2] = 0.0;  //up  (Up) is the unit vector indicating which direction is up for the ship
-		misc = new Double[][]{ //Create 4 3-vectors to represent the 4 corners of the base of the ship
+		super(0.0,0.0,0.0); //In case I decide to add anything to the Orientation constructor
+		c[0] = 0.0; //The actual physical location of the ship.
+		c[1] = 0.0; //Technically, vectors here are column vectors so they look like this:
+		c[2] = 1.0; //                    {{x},
+		Double [][] misc = new Double[][]{ //Create 4 3-vectors to represent the 4 corners of the base of the ship
 				new Double[]{-minorLength,-minorLength,0.0},
 				new Double[]{minorLength,-minorLength,0.0},
 				new Double[]{minorLength,minorLength,0.0},
 				new Double[]{-minorLength,minorLength,0.0}
 		}; //These are created in order for the rotating drawing
-		setUseMisc(); //Tell the superclass to use these misc vectors
+		setUseMisc(misc); //Tell the superclass to use these misc vectors
 	}
 	
 	/**
@@ -69,26 +63,26 @@ public class Ship extends Orientation{
 		gl.glMaterialf(GL.GL_FRONT_AND_BACK, GLLightingFunc.GL_SHININESS, 1.0f); //Make it shiny!
 		gl.glMaterialfv(GL.GL_FRONT_AND_BACK, GLLightingFunc.GL_AMBIENT_AND_DIFFUSE, new float[]{1.0f,0.0f,0.0f}, 0); //And Blue...
 		gl.glMaterialfv(GL.GL_FRONT_AND_BACK, GLLightingFunc.GL_SPECULAR, new float[]{0.0f,0.0f,1.0f}, 0); //Shiny blue
-	    gl.glVertex3d(eye[0]+noselocation[0],eye[1]+noselocation[1],eye[2]+noselocation[2]);   //Place the vertex for the nose of the ship
+	    gl.glVertex3d(c[0]+noselocation[0],c[1]+noselocation[1],c[2]+noselocation[2]);   //Place the vertex for the nose of the ship
 	    gl.glMaterialfv(GL.GL_FRONT_AND_BACK, GLLightingFunc.GL_AMBIENT_AND_DIFFUSE, new float[]{0.0f,1.0f,0.0f}, 0); //Fade to green
 		gl.glMaterialfv(GL.GL_FRONT_AND_BACK, GLLightingFunc.GL_SPECULAR, new float[]{0.0f,1.0f,0.0f}, 0); //Shiny green
-	    gl.glVertex3d(eye[0]+(minorLength*misc[0][0]),eye[1]+(minorLength*misc[0][1]),eye[2]+(minorLength*misc[0][2]));   //Draw the remaining edges in this order:
-	    gl.glVertex3d(eye[0]+(minorLength*misc[1][0]),eye[1]+(minorLength*misc[1][1]),eye[2]+(minorLength*misc[1][2]));   //			1,2,3,4,1
+	    gl.glVertex3d(c[0]+(minorLength*misc[0][0]),c[1]+(minorLength*misc[0][1]),c[2]+(minorLength*misc[0][2]));   //Draw the remaining edges in this order:
+	    gl.glVertex3d(c[0]+(minorLength*misc[1][0]),c[1]+(minorLength*misc[1][1]),c[2]+(minorLength*misc[1][2]));   //			1,2,3,4,1
 	    gl.glMaterialfv(GL.GL_FRONT_AND_BACK, GLLightingFunc.GL_AMBIENT_AND_DIFFUSE, new float[]{0.0f,0.0f,1.0f}, 0); //Fade to green
 		gl.glMaterialfv(GL.GL_FRONT_AND_BACK, GLLightingFunc.GL_SPECULAR, new float[]{0.0f,0.0f,1.0f}, 0); //Shiny green
-	    gl.glVertex3d(eye[0]+(minorLength*misc[2][0]),eye[1]+(minorLength*misc[2][1]),eye[2]+(minorLength*misc[2][2]));   //Which mark the four corners of the base
-	    gl.glVertex3d(eye[0]+(minorLength*misc[3][0]),eye[1]+(minorLength*misc[3][1]),eye[2]+(minorLength*misc[3][2]));   //		Note: reversing the drawing order causes the normal to point inwards
+	    gl.glVertex3d(c[0]+(minorLength*misc[2][0]),c[1]+(minorLength*misc[2][1]),c[2]+(minorLength*misc[2][2]));   //Which mark the four corners of the base
+	    gl.glVertex3d(c[0]+(minorLength*misc[3][0]),c[1]+(minorLength*misc[3][1]),c[2]+(minorLength*misc[3][2]));   //		Note: reversing the drawing order causes the normal to point inwards
 	    gl.glMaterialfv(GL.GL_FRONT_AND_BACK, GLLightingFunc.GL_AMBIENT_AND_DIFFUSE, new float[]{0.0f,1.0f,0.0f}, 0); //Fade to green
 		gl.glMaterialfv(GL.GL_FRONT_AND_BACK, GLLightingFunc.GL_SPECULAR, new float[]{0.0f,1.0f,0.0f}, 0); //Shiny green
-	    gl.glVertex3d(eye[0]+(minorLength*misc[0][0]),eye[1]+(minorLength*misc[0][1]),eye[2]+(minorLength*misc[0][2]));   //		Also: eye+(minorLength*misc is a sequence of 4 3-vectors pointing to corners
+	    gl.glVertex3d(c[0]+(minorLength*misc[0][0]),c[1]+(minorLength*misc[0][1]),c[2]+(minorLength*misc[0][2]));   //		Also: eye+(minorLength*misc is a sequence of 4 3-vectors pointing to corners
 		gl.glEnd(); //Finish the the main pyramid part
 		gl.glBegin(GL2.GL_QUADS); //Draw the base of the ship as a square
-		gl.glVertex3d(eye[0]+(minorLength*misc[0][0]),eye[1]+(minorLength*misc[0][1]),eye[2]+(minorLength*misc[0][2])); //Note, same order as the pyramid, which causes the normal to appear outside.
-	    gl.glVertex3d(eye[0]+(minorLength*misc[1][0]),eye[1]+(minorLength*misc[1][1]),eye[2]+(minorLength*misc[1][2]));
+		gl.glVertex3d(c[0]+(minorLength*misc[0][0]),c[1]+(minorLength*misc[0][1]),c[2]+(minorLength*misc[0][2])); //Note, same order as the pyramid, which causes the normal to appear outside.
+	    gl.glVertex3d(c[0]+(minorLength*misc[1][0]),c[1]+(minorLength*misc[1][1]),c[2]+(minorLength*misc[1][2]));
 	    gl.glMaterialfv(GL.GL_FRONT_AND_BACK, GLLightingFunc.GL_AMBIENT_AND_DIFFUSE, new float[]{0.0f,0.0f,1.0f}, 0); //Fade to green
 		gl.glMaterialfv(GL.GL_FRONT_AND_BACK, GLLightingFunc.GL_SPECULAR, new float[]{0.0f,0.0f,1.0f}, 0); //Shiny green
-	    gl.glVertex3d(eye[0]+(minorLength*misc[2][0]),eye[1]+(minorLength*misc[2][1]),eye[2]+(minorLength*misc[2][2]));
-	    gl.glVertex3d(eye[0]+(minorLength*misc[3][0]),eye[1]+(minorLength*misc[3][1]),eye[2]+(minorLength*misc[3][2]));
+	    gl.glVertex3d(c[0]+(minorLength*misc[2][0]),c[1]+(minorLength*misc[2][1]),c[2]+(minorLength*misc[2][2]));
+	    gl.glVertex3d(c[0]+(minorLength*misc[3][0]),c[1]+(minorLength*misc[3][1]),c[2]+(minorLength*misc[3][2]));
 		gl.glEnd(); //Finish the base
 	}
 }
