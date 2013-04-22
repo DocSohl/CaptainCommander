@@ -47,6 +47,7 @@ public class MainApp extends JApplet implements GLEventListener, KeyListener
 	boolean startGame = false;
 	boolean pauseGame = false;
 	boolean restartGame = false;
+	boolean invertControls = false;
 	//will be used to control when the player ship can fire
 	boolean canFire = false;
 	Thread updateThread;
@@ -84,10 +85,10 @@ public class MainApp extends JApplet implements GLEventListener, KeyListener
 		final GL2 gl = gld.getGL().getGL2();
 		gl.glBegin(GL2.GL_QUADS);
 
-		gl.glVertex3d(camera.eye[0]-1.0,camera.eye[1]- 1.0,camera.eye[2]+ 1.0);
-		gl.glVertex3d(camera.eye[0]-1.0,camera.eye[1]+ 1.0,camera.eye[2]+ 1.0);
-		gl.glVertex3d(camera.eye[0]+1.0,camera.eye[1]+ 1.0,camera.eye[2]+ 1.0);
-		gl.glVertex3d(camera.eye[0]+1.0,camera.eye[1]- 1.0,camera.eye[2]+ 1.0);
+		gl.glVertex3d(camera.eye[0],camera.eye[1],camera.eye[2]);
+		gl.glVertex3d(camera.eye[0],camera.eye[1],camera.eye[2]);
+		gl.glVertex3d(camera.eye[0],camera.eye[1],camera.eye[2]);
+		gl.glVertex3d(camera.eye[0],camera.eye[1],camera.eye[2]);
 		gl.glEnd();
 
 	}
@@ -126,11 +127,15 @@ public class MainApp extends JApplet implements GLEventListener, KeyListener
 		final GL2 gl = gld.getGL().getGL2();
 		gl.glBegin(GL2.GL_QUADS);
 
-		gl.glVertex3d(camera.eye[0]-1.0,camera.eye[1]- 1.0,camera.eye[2]+ 1.0);
-		gl.glVertex3d(camera.eye[0]-1.0,camera.eye[1]+ 1.0,camera.eye[2]+ 1.0);
-		gl.glVertex3d(camera.eye[0]+1.0,camera.eye[1]+ 1.0,camera.eye[2]+ 1.0);
-		gl.glVertex3d(camera.eye[0]+1.0,camera.eye[1]- 1.0,camera.eye[2]+ 1.0);
-		gl.glEnd();
+
+
+		//
+		//		gl.glVertex3d(camera.eye[0]-1.0,camera.eye[1]- 1.0,camera.eye[2]+ 1.0);
+		//		gl.glVertex3d(camera.eye[0]-1.0,camera.eye[1]+ 1.0,camera.eye[2]+ 1.0);
+		//		gl.glVertex3d(camera.eye[0]+1.0,camera.eye[1]+ 1.0,camera.eye[2]+ 1.0);
+		//		gl.glVertex3d(camera.eye[0]+1.0,camera.eye[1]- 1.0,camera.eye[2]+ 1.0);
+		//		gl.glEnd();
+
 	}
 
 	/**
@@ -306,8 +311,15 @@ public class MainApp extends JApplet implements GLEventListener, KeyListener
 
 				}
 				else{
-					camera.roll(x-lastx,winWidth); //And compare with the last ones to make a roll
-					camera.pitch(y-lasty,winHeight); //And pitch
+					if (invertControls == true){
+						//THIS NEEDS WORK
+						camera.roll(x-lastx,winWidth);
+						camera.pitch((y-lasty)*-1,winHeight);
+					}
+					else{
+						camera.roll(x-lastx,winWidth); //And compare with the last ones to make a roll
+						camera.pitch(y-lasty,winHeight); //And pitch
+					}
 				}
 				lastx=x; //Store for the next time
 				lasty=y;
@@ -351,7 +363,6 @@ public class MainApp extends JApplet implements GLEventListener, KeyListener
 
 		if (e.getKeyCode() == KeyEvent.VK_ESCAPE){
 			if (startGame == false){
-
 			}
 			else{
 				if (pauseGame == true){
@@ -363,6 +374,13 @@ public class MainApp extends JApplet implements GLEventListener, KeyListener
 		}
 		if (e.getKeyCode() == KeyEvent.VK_ENTER){
 			startGame = true;
+		}
+		if (e.getKeyCode() == KeyEvent.VK_SHIFT){
+			if (invertControls == true){
+				invertControls = false;
+				return;
+			}
+			invertControls = true;
 		}
 	}
 	@Override
