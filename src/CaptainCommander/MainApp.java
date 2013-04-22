@@ -95,7 +95,7 @@ public class MainApp extends JApplet implements GLEventListener, KeyListener
 		final GL2 gl = gld.getGL().getGL2();
 		//gl.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT);
 		//gl.glLoadIdentity();
-		
+
 		gl.glBegin(GL2.GL_QUADS);
 		gl.glVertex3d(-1.0,- 1.0,+ 1.0);
 		gl.glVertex3d(-1.0,+ 1.0,+ 1.0);
@@ -103,23 +103,23 @@ public class MainApp extends JApplet implements GLEventListener, KeyListener
 		gl.glVertex3d(+1.0,- 1.0,+ 1.0);
 		gl.glEnd();
 
-//		gl.glBegin(GL2.GL_QUADS);
-//		float [] color2 = {0.0f, 0.0f, 1.0f, 1.0f};
-//		gl.glVertex3d(-.5,- .5,+ 1.0);
-//		gl.glMaterialfv(GL.GL_FRONT_AND_BACK, GLLightingFunc.GL_AMBIENT_AND_DIFFUSE, color2, 0);
-//		gl.glMaterialfv(GL.GL_FRONT_AND_BACK, GLLightingFunc.GL_SPECULAR, color2, 0);
-//		gl.glVertex3d(-.5,+ .5, 0);
-//		gl.glVertex3d(+.5,+ .5, 0);
-//		gl.glVertex3d(+.5,- .5, 0);
-//		gl.glEnd();
+		//		gl.glBegin(GL2.GL_QUADS);
+		//		float [] color2 = {0.0f, 0.0f, 1.0f, 1.0f};
+		//		gl.glVertex3d(-.5,- .5,+ 1.0);
+		//		gl.glMaterialfv(GL.GL_FRONT_AND_BACK, GLLightingFunc.GL_AMBIENT_AND_DIFFUSE, color2, 0);
+		//		gl.glMaterialfv(GL.GL_FRONT_AND_BACK, GLLightingFunc.GL_SPECULAR, color2, 0);
+		//		gl.glVertex3d(-.5,+ .5, 0);
+		//		gl.glVertex3d(+.5,+ .5, 0);
+		//		gl.glVertex3d(+.5,- .5, 0);
+		//		gl.glEnd();
 
-//		gl.glBegin(GL.GL_POLYGON_OFFSET_FACTOR);
-//		gl.glColor4f(1, 0, 0, 1);             
-//		gl.glVertex2d(1, 1);
-//		gl.glVertex2d(1, 2);
-//		gl.glVertex2d(2, 2);
-//		gl.glVertex2d(2, 1);
-//		gl.glEnd();
+		//		gl.glBegin(GL.GL_POLYGON_OFFSET_FACTOR);
+		//		gl.glColor4f(1, 0, 0, 1);             
+		//		gl.glVertex2d(1, 1);
+		//		gl.glVertex2d(1, 2);
+		//		gl.glVertex2d(2, 2);
+		//		gl.glVertex2d(2, 1);
+		//		gl.glEnd();
 
 	}
 	public synchronized void inGameOverLay(GLAutoDrawable gld){
@@ -189,12 +189,18 @@ public class MainApp extends JApplet implements GLEventListener, KeyListener
 			gl.glVertex3d(2.0, 2.0, 4.0); //Define the remaining two corners
 			gl.glVertex3d(2.0, -2.0, 4.0); 
 			if (pauseGame == true){
-				
-				pauseScreen(gld);				
+
+				pauseScreen(gld);	
+				renderer.beginRendering(gld.getWidth(), gld.getHeight());
+				renderer.draw("click to restart",  winWidth/2+150, winHeight/2+150);
+				renderer.draw("click to resume game", winWidth/2-150, winHeight/2-150);
+				renderer.endRendering();
+
 			}
 			else{
 				//commented out until working
 				//inGameOverLay(gld);
+				//will need to add text renderer once working
 			}
 			gl.glEnd(); //Done with rectangle
 		}
@@ -344,11 +350,16 @@ public class MainApp extends JApplet implements GLEventListener, KeyListener
 		}
 
 		if (e.getKeyCode() == KeyEvent.VK_ESCAPE){
-			if (pauseGame == true){
-				pauseGame = false;
-				return;
+			if (startGame == false){
+
 			}
-			pauseGame = true;
+			else{
+				if (pauseGame == true){
+					pauseGame = false;
+					return;
+				}
+				pauseGame = true;
+			}
 		}
 		if (e.getKeyCode() == KeyEvent.VK_ENTER){
 			startGame = true;
