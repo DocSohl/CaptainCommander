@@ -119,7 +119,7 @@ public class MainApp extends JApplet implements GLEventListener, KeyListener
 		camera.setLookAt(glu);
 
 		if (startGame == false){
-			//startScreen(gld);
+			startScreen(gld);
 		}
 		else{
 			// set the position and diffuse/ambient terms of the light
@@ -250,6 +250,7 @@ public class MainApp extends JApplet implements GLEventListener, KeyListener
 				int middleY = screeny+(winHeight / 2);
 				int x = e.getX();
 				int y = e.getY();//Get the current coordinates...
+				System.out.println(pauseGame + ", " + startGame);
 				if (pauseGame == true || startGame == false){
 
 				}
