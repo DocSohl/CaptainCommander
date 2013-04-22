@@ -75,25 +75,61 @@ public class MainApp extends JApplet implements GLEventListener, KeyListener
 	 * Run all periodic items in the scene
 	 */
 	public synchronized void update () {
-	
+
 		//Unused for now
 		//System.out.println("pauseGame state: " + pauseGame);
 		//		ship.roll(1,winWidth*1000);
 	}
 	public synchronized void pauseScreen(GLAutoDrawable gld){
 		final GL2 gl = gld.getGL().getGL2();
-		gl.glVertex3d(camera.eye[0]-1.0,camera.eye[1]- 1.0,camera.eye[2]+ .1);
-		gl.glVertex3d(camera.eye[0]-1.0,camera.eye[1]+ 1.0,camera.eye[2]+ .1);
-		gl.glVertex3d(camera.eye[0]+1.0,camera.eye[1]+ 1.0,camera.eye[2]+ .1);
-		gl.glVertex3d(camera.eye[0]+1.0,camera.eye[1]- 1.0,camera.eye[2]+ .1);
+		gl.glBegin(GL2.GL_QUADS);
+
+		gl.glVertex3d(camera.eye[0]-1.0,camera.eye[1]- 1.0,camera.eye[2]+ 1.0);
+		gl.glVertex3d(camera.eye[0]-1.0,camera.eye[1]+ 1.0,camera.eye[2]+ 1.0);
+		gl.glVertex3d(camera.eye[0]+1.0,camera.eye[1]+ 1.0,camera.eye[2]+ 1.0);
+		gl.glVertex3d(camera.eye[0]+1.0,camera.eye[1]- 1.0,camera.eye[2]+ 1.0);
 		gl.glEnd();
+
 	}
 	public synchronized void startScreen(GLAutoDrawable gld){
 		final GL2 gl = gld.getGL().getGL2();
+		//gl.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT);
+		//gl.glLoadIdentity();
+		
+		gl.glBegin(GL2.GL_QUADS);
 		gl.glVertex3d(-1.0,- 1.0,+ 1.0);
 		gl.glVertex3d(-1.0,+ 1.0,+ 1.0);
 		gl.glVertex3d(+1.0,+ 1.0,+ 1.0);
 		gl.glVertex3d(+1.0,- 1.0,+ 1.0);
+		gl.glEnd();
+
+//		gl.glBegin(GL2.GL_QUADS);
+//		float [] color2 = {0.0f, 0.0f, 1.0f, 1.0f};
+//		gl.glVertex3d(-.5,- .5,+ 1.0);
+//		gl.glMaterialfv(GL.GL_FRONT_AND_BACK, GLLightingFunc.GL_AMBIENT_AND_DIFFUSE, color2, 0);
+//		gl.glMaterialfv(GL.GL_FRONT_AND_BACK, GLLightingFunc.GL_SPECULAR, color2, 0);
+//		gl.glVertex3d(-.5,+ .5, 0);
+//		gl.glVertex3d(+.5,+ .5, 0);
+//		gl.glVertex3d(+.5,- .5, 0);
+//		gl.glEnd();
+
+//		gl.glBegin(GL.GL_POLYGON_OFFSET_FACTOR);
+//		gl.glColor4f(1, 0, 0, 1);             
+//		gl.glVertex2d(1, 1);
+//		gl.glVertex2d(1, 2);
+//		gl.glVertex2d(2, 2);
+//		gl.glVertex2d(2, 1);
+//		gl.glEnd();
+
+	}
+	public synchronized void inGameOverLay(GLAutoDrawable gld){
+		final GL2 gl = gld.getGL().getGL2();
+		gl.glBegin(GL2.GL_QUADS);
+
+		gl.glVertex3d(camera.eye[0]-1.0,camera.eye[1]- 1.0,camera.eye[2]+ 1.0);
+		gl.glVertex3d(camera.eye[0]-1.0,camera.eye[1]+ 1.0,camera.eye[2]+ 1.0);
+		gl.glVertex3d(camera.eye[0]+1.0,camera.eye[1]+ 1.0,camera.eye[2]+ 1.0);
+		gl.glVertex3d(camera.eye[0]+1.0,camera.eye[1]- 1.0,camera.eye[2]+ 1.0);
 		gl.glEnd();
 	}
 
@@ -120,6 +156,10 @@ public class MainApp extends JApplet implements GLEventListener, KeyListener
 
 		if (startGame == false){
 			startScreen(gld);
+			renderer.beginRendering(gld.getWidth(), gld.getHeight());
+			renderer.draw("escape to pause", winWidth/2, winHeight/2-150);
+			renderer.draw("click to begin", winWidth/2, winHeight/2-150+36);
+			renderer.endRendering();
 		}
 		else{
 			// set the position and diffuse/ambient terms of the light
@@ -149,7 +189,12 @@ public class MainApp extends JApplet implements GLEventListener, KeyListener
 			gl.glVertex3d(2.0, 2.0, 4.0); //Define the remaining two corners
 			gl.glVertex3d(2.0, -2.0, 4.0); 
 			if (pauseGame == true){
-				//pauseScreen(gld);
+				
+				pauseScreen(gld);				
+			}
+			else{
+				//commented out until working
+				//inGameOverLay(gld);
 			}
 			gl.glEnd(); //Done with rectangle
 		}
@@ -223,12 +268,12 @@ public class MainApp extends JApplet implements GLEventListener, KeyListener
 				lasty = e.getY();
 			}
 			public void mouseClicked(MouseEvent e){
-				System.out.println(e.getX() + ", " + e.getY());
+				//System.out.println(e.getX() + ", " + e.getY());
 				if (startGame == false){
 					//NOT SURE WHY THISE ISN'T WORKING YET
-//					if (Math.abs(e.getX()-winWidth/2)<25 && Math.abs(e.getY()-winHeight/2)<25){
-//						startGame = true;
-//					}
+					//					if (Math.abs(e.getX()-winWidth/2)<25 && Math.abs(e.getY()-winHeight/2)<25){
+					//						startGame = true;
+					//					}
 					if (e.getX()  <= winWidth/2 + 25 && e.getX() >= winWidth/2-25 && 
 							e.getY() <=winHeight/2 + 25 && e.getY() >= winHeight/2-25){
 						startGame = true;
@@ -236,7 +281,7 @@ public class MainApp extends JApplet implements GLEventListener, KeyListener
 				}
 				else if(startGame == true && pauseGame == false){
 					if (canFire == true){
-						
+
 					}
 					//fire weapon code
 				}
@@ -250,7 +295,7 @@ public class MainApp extends JApplet implements GLEventListener, KeyListener
 				int middleY = screeny+(winHeight / 2);
 				int x = e.getX();
 				int y = e.getY();//Get the current coordinates...
-				System.out.println(pauseGame + ", " + startGame);
+				//System.out.println(pauseGame + ", " + startGame);
 				if (pauseGame == true || startGame == false){
 
 				}
