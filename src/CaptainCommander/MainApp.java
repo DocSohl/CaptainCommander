@@ -116,7 +116,6 @@ public class MainApp extends JApplet implements GLEventListener, KeyListener
 				{-0.28,-.125,0.1},//""39
 		};
 		camera.setUseMisc(plane);
-		ship = new Ship(); //Create a test ship for testing.
 
 	}
 
@@ -374,23 +373,8 @@ public class MainApp extends JApplet implements GLEventListener, KeyListener
 			Ship ship = siter.next();
 			ship.update(gld,glut,ships); //added
 			ship.display(gld);
+		}
 
-			// draw a GIANT ASS RECTANGLE (for science)
-			gl.glBegin(GL2.GL_QUADS); //Use quads to define vertices
-			float [] color2 = {0.0f, 0.0f, 1.0f, 1.0f}; //Make one side blue
-			gl.glMaterialfv(GL.GL_FRONT_AND_BACK, GLLightingFunc.GL_AMBIENT_AND_DIFFUSE, color2, 0);
-			gl.glMaterialfv(GL.GL_FRONT_AND_BACK, GLLightingFunc.GL_SPECULAR, color2, 0);
-			gl.glMaterialf(GL.GL_FRONT_AND_BACK, GLLightingFunc.GL_SHININESS, 1.0f); //And Shiny!
-			gl.glNormal3d(0,0,-1); //Point the normal in the right direction
-			gl.glVertex3d(-2.0, -2.0, 4.0); //Define two corners
-			gl.glVertex3d(-2.0, 2.0, 4.0);
-			float [] color4 = {1.0f, 0.0f, 0.0f, 1.0f}; //Make the other side red
-			gl.glMaterialfv(GL.GL_FRONT_AND_BACK, GLLightingFunc.GL_AMBIENT_AND_DIFFUSE, color4, 0);
-			gl.glMaterialfv(GL.GL_FRONT_AND_BACK, GLLightingFunc.GL_SPECULAR, color4, 0);
-			gl.glMaterialf(GL.GL_FRONT_AND_BACK, GLLightingFunc.GL_SHININESS, 1.0f); //Also shiny!
-			gl.glVertex3d(2.0, 2.0, 4.0); //Define the remaining two corners
-			gl.glVertex3d(2.0, -2.0, 4.0);
-			gl.glEnd(); //Done with rectangle
 			if (pauseGame == true){
 
 				pauseScreen(gld);	
@@ -585,6 +569,9 @@ public class MainApp extends JApplet implements GLEventListener, KeyListener
 		}
 		if (e.getKeyCode() == KeyEvent.VK_SHIFT){
 			invertControls = !invertControls;
+		}
+		if(e.getKeyCode() == KeyEvent.VK_SPACE){
+			camera.shoot();
 		}
 	}
 	@Override
