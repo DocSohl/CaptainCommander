@@ -11,7 +11,7 @@ package CaptainCommander;
  *
  */
 abstract class Orientation {
-	protected Double [] c = {0.0,0.0,1.0}; //The position of the object's center
+	protected Double [] c = {0.0,0.0,0.0}; //The position of the object's center
 	protected Double [][] misc = null;
 	private Double [][] omisc = null; //A list of other vectors for the program to track
 	private boolean usemisc = false; //Set true if values are stored within misc
@@ -48,6 +48,8 @@ abstract class Orientation {
 
 	/**Square a double*/
 	protected double sqr(double x){return x*x;}
+	
+	protected int sign(double x){return x>=0? 1:-1;}
 
 	/**Move the object forward
 	 * @param multiplier Amount to move forward by in screen units*/
@@ -92,13 +94,39 @@ abstract class Orientation {
 			System.out.println(">");
 		}
 	}
+	
+	/**Add two 3-vectors together */
+	protected Double [] addVec(Double [] vec1, Double [] vec2){
+		return new Double[]{vec1[0]+vec2[0],vec1[1]+vec2[1],vec1[2]+vec2[2]};
+	}
+	
+	/**Subtract two 3-vectors from another*/
+	protected Double [] subVec(Double [] vec1, Double [] vec2){
+		return new Double[]{vec1[0]-vec2[0],vec1[1]-vec2[1],vec1[2]-vec2[2]};
+	}
+	
+	/**
+	 * Returned the squared magnitude of a vector. (No slow square root)
+	 * @param vec Column 3-vector
+	 */
+	protected double sqrmag(Double [] vec){
+		return sqr(vec[0])+sqr(vec[1])+sqr(vec[2]);
+	}
+	
+	/**
+	 * Returned the absolute magnitude of a vector. (with slow square root)
+	 * @param vec Column 3-vector
+	 */
+	protected double mag(Double [] vec){
+		return Math.sqrt(sqr(vec[0])+sqr(vec[1])+sqr(vec[2]));
+	}
 
 	/**
 	 * Roll the object by a specific angle. This will cause the object to roll along it's translated z-axis.
 	 * @param angle Angle to rotate around in radians.
 	 */
 	protected void pitch(double angle){
-		reevaluate(0.0,-angle); //Re-evaluate all vectors with the new angle
+		reevaluate(0.0,-angle,0.0); //Re-evaluate all vectors with the new angle
 	}
 
 
@@ -107,7 +135,11 @@ abstract class Orientation {
 	 * @param angle Angle to rotate around in radians.
 	 */
 	protected void roll(double angle){
-		reevaluate(angle,0.0); //Re-evaluate all vectors with the new angle
+		reevaluate(angle,0.0,0.0); //Re-evaluate all vectors with the new angle
+	}
+	
+	protected void yaw(double angle){
+		reevaluate(0.0,0.0,angle);
 	}
 
 	/**
@@ -125,6 +157,18 @@ abstract class Orientation {
 		}
 		v = normalize(newv); //Update the relative angle with the new one
 		n = normalize(newn);
+	}
+	
+	protected Double [][] multiplyMatrices(Double [][] m1, Double [][] m2){
+		Double [][] output = new Double[][]{{0.0,0.0,0.0},{0.0,0.0,0.0},{0.0,0.0,0.0}};
+		for(int i = 0; i < 3; i++) { //Loop through Columns in the matrix
+			for(int k = 0; k < 3; k++) { //Loop through the Rows of the vector
+				for(int l = 0; l < 3; l++){
+					output[i][l] += m1[i][k] * m2[k][l]; //Sum the matrix components
+				}
+			}
+		}
+		return output;
 	}
 
 	/**
@@ -273,7 +317,7 @@ abstract class Orientation {
 	 * @param roll The instantaneous roll of the object
 	 * @param pitch The instantaneous pitch of the object
 	 */
-	private void reevaluate(double roll, double pitch){
+	private void reevaluate(double roll, double pitch, double yaw){
 		Double [] u = cross(v,n);
 		Double [] t = {0.0,0.0,0.0};
 		t[0] = Math.cos(roll)*v[0] - Math.sin(roll)*u[0];
@@ -287,9 +331,24 @@ abstract class Orientation {
         n[1] = Math.sin(pitch)*v[1] + Math.cos(pitch)*n[1];
         n[2] = Math.sin(pitch)*v[2] + Math.cos(pitch)*n[2];
         v=t.clone();
+        u = cross(v,n);
+        Double [][] uvn = new Double[][]{u,v,n};
+        Double [][] yawMatrix1 = {
+        		{1.0,0.0,0.0},
+        		{0.0,Math.cos(yaw),-Math.sin(yaw)},
+        		{0.0,Math.sin(yaw),Math.cos(yaw)}};
+        Double [][] yawMatrix2 = {
+        		{1.0,0.0,0.0},
+        		{0.0,Math.cos(yaw),-Math.sin(yaw)},
+        		{0.0,Math.sin(yaw),Math.cos(yaw)}};
+        Double [][] yawMatrix3 = {
+        		{Math.cos(yaw),-Math.sin(yaw),0.0},
+        		{Math.sin(yaw),Math.cos(yaw),0.0},
+        		{0.0,0.0,1.0}};
+        uvn = multiplyMatrices(uvn,yawMatrix3);
+        v = uvn[1];
+        n = uvn[2];
         if(usemisc){
-        	u = cross(v,n);
-        	Double [][] uvn = new Double[][]{u,v,n};
         	Double [][] matrix = inverse(uvn);
         	for(int l = 0; l<misc.length; l++){
         		Double [] tempmisc = {0.0,0.0,0.0};
@@ -299,5 +358,21 @@ abstract class Orientation {
         		misc[l]=tempmisc;
         	}
         }
+	}
+	
+	/**
+	 * Convert a screen coordinate vector into camera coordinates
+	 * @param vector Unit Vector to transform
+	 * @return Unit vector in the camera system
+	 */
+	protected Double [] convertToCamera(Double [] vector){
+		Double [] u = cross(v,n);
+    	Double [][] uvn = new Double[][]{u,v,n};
+    	Double [][] matrix = inverse(uvn);
+		Double [] output = {0.0,0.0,0.0};
+		for(int i = 0; i < 3; i++) //Loop through Columns in the matrix
+			for(int k = 0; k < 3; k++) //Loop through the Rows of the vector
+				output[i] += matrix[i][k] * vector[k];
+		return output;
 	}
 }
