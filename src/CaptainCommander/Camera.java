@@ -23,7 +23,7 @@ public class Camera extends Orientation{
 	 * @param uy Up(y) If it had arms...
 	 * @param uz Up(z) Or sentience...
 	 */
-	Camera(double ex, double ey, double ez, double cx, double cy, double cz, double ux, double uy, double uz) {
+	Camera() {
 		super(0.0,0.0,0.0);
 		Double [] test = new Double[]{0.0,1/Math.sqrt(2),1/Math.sqrt(2)};
 		printVector(n,"n");

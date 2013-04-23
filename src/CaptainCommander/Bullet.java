@@ -36,7 +36,7 @@ public class Bullet extends Orientation{
 			Iterator<Ship> siter = ships.iterator();
 			while(siter.hasNext()){
 				Ship ship = siter.next();
-				if(sqrmag(subVec(ship.c,this.c))<sqr(ship.minorLength)){
+				if(sqrmag(subVec(ship.c,this.c))<sqr(ship.majorLength)){
 					ship.dead=true;
 				}
 			}

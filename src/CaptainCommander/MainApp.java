@@ -52,9 +52,8 @@ public class MainApp extends JApplet implements GLEventListener, KeyListener
 	boolean startGame = false;
 	boolean pauseGame = false;
 	boolean restartGame = false;
-	boolean invertControls = false;
+	boolean invertControls = true;
 	boolean canFire = false;
-	Thread updateThread;
 	Cursor noCursor;
 	GLProfile glp;
 	GLCapabilities caps;
@@ -64,11 +63,11 @@ public class MainApp extends JApplet implements GLEventListener, KeyListener
 	ArrayList<Ship> ships = new ArrayList<Ship>();
 
 	public MainApp() {
-		camera = new Camera(0,0,0,0,0,1,0,1,0); //Create a camera at <0,0,0> pointing into the z-axis
+		camera = new Camera(); //Create a camera at <0,0,0> pointing into the z-axis
 		Ship player = new Ship();
 		camera.setPlayer(player);
 		ships.add(player);
-		for(int i=1; i<10; i++){
+		for(double i=1; i<10; i=i+0.1){
 			ships.add(new Ship(0.0,0.0,i));
 		}
 
@@ -119,14 +118,6 @@ public class MainApp extends JApplet implements GLEventListener, KeyListener
 
 	}
 
-	/**
-	 * Run all periodic items in the scene
-	 */
-	public synchronized void update () {
-		//Unused for now
-		//System.out.println("pauseGame state: " + pauseGame);
-		//		ship.roll(1,winWidth*1000);
-	}
 	public synchronized void gameInstructions(GLAutoDrawable gld){
 		smallRenderer.beginRendering(gld.getWidth(), gld.getHeight());
 		smallRenderer.draw("Number of enemies remaining:" + enemiesRemaining, winWidth/2 +100, winHeight-574);
@@ -348,7 +339,7 @@ public class MainApp extends JApplet implements GLEventListener, KeyListener
 		// Load the identity into the Modelview matrix
 		gl.glLoadIdentity();
 		// Setup the camera.  The camera is located at the origin, looking along the positive z-axis, with y-up
-		camera.forward();
+		if(!pauseGame) camera.forward();
 		camera.setLookAt(glu);
 
 		if (startGame == false){
@@ -369,11 +360,14 @@ public class MainApp extends JApplet implements GLEventListener, KeyListener
 			float [] specular = {1.0f, 1.0f, 1.0f, 1.0f};
 			gl.glLightfv(GLLightingFunc.GL_LIGHT0, GLLightingFunc.GL_SPECULAR, specular, 0);
 		Iterator<Ship> siter = ships.iterator();
+		enemyCount = 0;
 		while(siter.hasNext()){
 			Ship ship = siter.next();
-			ship.update(gld,glut,ships); //added
+			if(!ship.dead && ship.visible) enemyCount++;
+			if(!pauseGame) ship.update(gld,glut,ships); //added
 			ship.display(gld);
 		}
+		enemiesRemaining = "" + enemyCount;
 
 			if (pauseGame == true){
 
@@ -537,18 +531,10 @@ public class MainApp extends JApplet implements GLEventListener, KeyListener
 		});
 		// add the canvas to the frame
 		animator = new FPSAnimator(canvas, 60); //Set to run at 60 Frames per Second
-		updateThread = new Thread(new Runnable() {
-			public void run() {
-				while(true) {
-					update(); //Run the update thread at the same time
-				}
-			}
-		});
 	}
 
 	public void start() { //Applet start
 		animator.start();
-		updateThread.start();
 	} 
 	public void stop() {animator.stop();} //Applet Stop
 	public void dispose (GLAutoDrawable arg0){} //JoGL yells at me if I remove this
